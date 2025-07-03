@@ -133,7 +133,7 @@ const CompetitorAnalysis = () => {
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <main className="flex-1 overflow-x-hidden">
+      <main className="flex-1 ml-64 overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 z-10">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
@@ -502,7 +502,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 7. Business Model Canvas - Updated layout */}
+            {/* 7. Business Model Canvas - Updated layout with working tooltips */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Business Model Canvas</h2>
               <Card className="premium-shadow border-0">
@@ -514,8 +514,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[0].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[0].description}</p>
@@ -533,8 +535,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[1].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[1].description}</p>
@@ -552,8 +556,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[2].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[2].description}</p>
@@ -571,8 +577,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[3].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[3].description}</p>
@@ -590,8 +598,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[6].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[6].description}</p>
@@ -610,8 +620,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[4].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[4].description}</p>
@@ -629,8 +641,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[5].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[5].description}</p>
@@ -649,8 +663,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[7].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[7].description}</p>
@@ -668,8 +684,10 @@ const CompetitorAnalysis = () => {
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[8].title}</h3>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-48">
                               <p className="text-xs">{canvasBlocks[8].description}</p>
