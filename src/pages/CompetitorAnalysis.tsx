@@ -3,8 +3,10 @@ import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import Sidebar from "@/components/Sidebar";
 import { 
   ArrowLeft, 
@@ -14,7 +16,13 @@ import {
   Star,
   ExternalLink,
   Download,
-  Share2
+  Share2,
+  Info,
+  Target,
+  DollarSign,
+  Building,
+  MessageSquare,
+  ChevronDown
 } from "lucide-react";
 import { 
   LineChart, 
@@ -32,69 +40,71 @@ import {
 
 const CompetitorAnalysis = () => {
   const { companyName } = useParams();
-  const [showHighIntentKeywords, setShowHighIntentKeywords] = useState(false);
+  const [selectedCanvasBlock, setSelectedCanvasBlock] = useState<string | null>(null);
+  const [expandedBlocks, setExpandedBlocks] = useState<Record<string, boolean>>({});
 
-  // Dummy data for charts and tables
-  const teamCollaborationData = [
-    { name: 'Q1', users: 1200 },
-    { name: 'Q2', users: 1500 },
-    { name: 'Q3', users: 1800 },
-    { name: 'Q4', users: 2100 },
+  // Sample data for charts
+  const demographicsData = [
+    { name: '25-34', value: 35, color: '#8b5cf6' },
+    { name: '35-44', value: 28, color: '#06b6d4' },
+    { name: '45-54', value: 22, color: '#10b981' },
+    { name: '18-24', value: 15, color: '#f59e0b' },
   ];
 
-  const featureAdoptionData = [
-    { feature: 'Tasks', adoption: 85 },
-    { feature: 'Calendar', adoption: 70 },
-    { feature: 'Docs', adoption: 60 },
-    { feature: 'Goals', adoption: 45 },
+  const marketMetricsData = [
+    { name: 'Q1', value: 12 },
+    { name: 'Q2', value: 14 },
+    { name: 'Q3', value: 16 },
+    { name: 'Q4', value: 18 },
   ];
 
-  const trafficData = [
-    { month: 'Jan', visitors: 45000 },
-    { month: 'Feb', visitors: 52000 },
-    { month: 'Mar', visitors: 48000 },
-    { month: 'Apr', visitors: 61000 },
-    { month: 'May', visitors: 55000 },
-    { month: 'Jun', visitors: 67000 },
+  const competitors = [
+    { name: "Slack", website: "slack.com", category: "Direct", logo: "S" },
+    { name: "Microsoft Teams", website: "teams.microsoft.com", category: "Direct", logo: "MT" },
+    { name: "Discord", website: "discord.com", category: "Alternative", logo: "D" },
+    { name: "Zoom", website: "zoom.us", category: "Niche", logo: "Z" },
   ];
 
-  const trafficSources = [
-    { name: 'Direct', value: 40, color: '#8884d8' },
-    { name: 'Organic Search', value: 30, color: '#82ca9d' },
-    { name: 'Paid Search', value: 15, color: '#ffc658' },
-    { name: 'Social', value: 10, color: '#ff7300' },
-    { name: 'Referral', value: 5, color: '#8dd1e1' },
+  const canvasBlocks = [
+    { id: 'key-partners', title: 'Key Partners', color: 'bg-blue-50', description: 'Network of suppliers and partners that make the business model work' },
+    { id: 'key-activities', title: 'Key Activities', color: 'bg-green-50', description: 'Most important things a company must do to make its business model work' },
+    { id: 'key-resources', title: 'Key Resources', color: 'bg-purple-50', description: 'Most important assets required to make a business model work' },
+    { id: 'value-propositions', title: 'Value Propositions', color: 'bg-orange-50', description: 'Bundle of products and services that create value for a specific customer segment' },
+    { id: 'customer-relationships', title: 'Customer Relationships', color: 'bg-pink-50', description: 'Types of relationships a company establishes with specific customer segments' },
+    { id: 'channels', title: 'Channels', color: 'bg-indigo-50', description: 'How a company communicates with and reaches its customer segments' },
+    { id: 'customer-segments', title: 'Customer Segments', color: 'bg-teal-50', description: 'Different groups of people or organizations an enterprise aims to reach and serve' },
+    { id: 'cost-structure', title: 'Cost Structure', color: 'bg-red-50', description: 'All costs incurred to operate a business model' },
+    { id: 'revenue-streams', title: 'Revenue Streams', color: 'bg-yellow-50', description: 'Cash a company generates from each customer segment' },
   ];
 
-  const keywordData = [
-    { keyword: "project management", volume: "5,400", intent: "high" },
-    { keyword: "team collaboration", volume: "3,200", intent: "high" },
-    { keyword: "task tracking", volume: "2,800", intent: "medium" },
-    { keyword: "workflow automation", volume: "1,900", intent: "high" },
-    { keyword: "productivity tools", volume: "4,100", intent: "medium" },
-    { keyword: "remote work", volume: "6,500", intent: "low" },
-    { keyword: "agile methodology", volume: "1,200", intent: "high" },
-    { keyword: "kanban board", volume: "890", intent: "high" },
-  ];
+  const getCanvasBlockContent = (blockId: string) => {
+    const content: Record<string, string[]> = {
+      'key-partners': ['Technology providers', 'Integration partners', 'Consulting firms', 'Cloud infrastructure providers'],
+      'key-activities': ['Product development', 'Customer support', 'Marketing & sales', 'Platform maintenance'],
+      'key-resources': ['Development team', 'Brand reputation', 'Technology platform', 'Customer data'],
+      'value-propositions': ['Real-time collaboration', 'Unified workspace', 'Cross-platform sync', 'Enterprise security'],
+      'customer-relationships': ['Self-service support', 'Community forums', 'Dedicated account management', 'Automated assistance'],
+      'channels': ['Direct sales', 'Online marketing', 'Partner channels', 'App stores'],
+      'customer-segments': ['Small teams', 'Enterprise organizations', 'Remote workers', 'Creative agencies'],
+      'cost-structure': ['Development costs', 'Infrastructure costs', 'Marketing expenses', 'Personnel costs'],
+      'revenue-streams': ['Subscription fees', 'Enterprise licenses', 'Premium features', 'Add-on services'],
+    };
+    return content[blockId] || [];
+  };
 
-  const filteredKeywords = showHighIntentKeywords 
-    ? keywordData.filter(k => k.intent === "high")
-    : keywordData;
-
-  const businessModelCards = [
-    { title: "Business Model", value: "SaaS", type: "tag" },
-    { title: "Pricing", value: "$49/mo", type: "value" },
-    { title: "Market Type", value: "B2B", type: "tag" },
-    { title: "Pricing Tiers", value: ["Free", "Pro", "Enterprise"], type: "pills" },
-    { title: "Sales Channels", value: ["Website", "Agency Partners"], type: "tags" },
-    { title: "Payment Options", value: ["Stripe", "PayPal", "Apple Pay"], type: "icons" },
-  ];
+  const toggleBlockExpansion = (blockId: string) => {
+    setExpandedBlocks(prev => ({
+      ...prev,
+      [blockId]: !prev[blockId]
+    }));
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
       <main className="flex-1">
+        {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 z-10">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
             <div className="flex items-center gap-4">
@@ -124,8 +134,8 @@ const CompetitorAnalysis = () => {
         <div className="p-8">
           <div className="max-w-6xl mx-auto space-y-12">
 
-            {/* Company Overview */}
-            <section id="company-overview" className="space-y-6">
+            {/* 1. Company Overview - Keep existing */}
+            <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Company Overview</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="premium-shadow border-0">
@@ -198,355 +208,534 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* Business Model & Monetization */}
-            <section id="business-model" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">Business Model & Monetization</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {businessModelCards.map((card, index) => (
-                  <Card key={index} className="premium-shadow border-0">
-                    <CardContent className="p-4">
-                      <h3 className="font-medium text-sm text-slate-600 mb-2">{card.title}</h3>
-                      <div className="space-y-2">
-                        {card.type === "tag" && (
-                          <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
-                            {card.value}
-                          </Badge>
-                        )}
-                        {card.type === "value" && (
-                          <p className="font-semibold text-lg text-slate-900">{card.value}</p>
-                        )}
-                        {card.type === "pills" && (
-                          <div className="flex flex-wrap gap-1">
-                            {(card.value as string[]).map((item, i) => (
-                              <Badge key={i} variant="outline" className="text-xs">
-                                {item}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        {card.type === "tags" && (
-                          <div className="flex flex-wrap gap-1">
-                            {(card.value as string[]).map((item, i) => (
-                              <Badge key={i} className="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs">
-                                {item}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        {card.type === "icons" && (
-                          <div className="flex flex-wrap gap-1">
-                            {(card.value as string[]).map((item, i) => (
-                              <Badge key={i} variant="outline" className="text-xs">
-                                {item}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <p className="text-xs text-slate-500 italic">
-                *Pricing inferred from website + review sources.
-              </p>
-            </section>
-
-            {/* Marketing & SEO */}
-            <section id="marketing-seo" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">Marketing & SEO</h2>
-              
-              {/* Targeted Keywords Section */}
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Targeted Keywords</CardTitle>
-                    <div className="flex items-center space-x-2">
-                      <label htmlFor="high-intent" className="text-sm text-slate-600">
-                        Show Only High-Intent Keywords
-                      </label>
-                      <Switch
-                        id="high-intent"
-                        checked={showHighIntentKeywords}
-                        onCheckedChange={setShowHighIntentKeywords}
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    Extracted from homepage meta + blog articles + ads
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Keyword</TableHead>
-                        <TableHead className="text-right">Monthly Volume</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredKeywords.map((keyword, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{keyword.keyword}</TableCell>
-                          <TableCell className="text-right">{keyword.volume}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-
-              {/* Rest of Marketing & SEO content */}
+            {/* 2. Website Overview */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Website Overview</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="premium-shadow border-0">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Social Media Presence</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                      <span className="font-medium text-sm">Twitter</span>
-                      <span className="text-slate-600">142K followers</span>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                      <h3 className="font-semibold text-slate-900">Monthly Traffic</h3>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                      <span className="font-medium text-sm">LinkedIn</span>
-                      <span className="text-slate-600">89K followers</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                      <span className="font-medium text-sm">Instagram</span>
-                      <span className="text-slate-600">45K followers</span>
+                    <div className="space-y-2">
+                      <p className="text-3xl font-bold text-slate-900">345,000</p>
+                      <p className="text-sm text-slate-500">monthly visits</p>
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                        +12% vs last month
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="premium-shadow border-0">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Content Strategy</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100">Educational Content</Badge>
-                    <Badge className="bg-green-50 text-green-700 hover:bg-green-100">Product-Led Growth</Badge>
-                    <Badge className="bg-purple-50 text-purple-700 hover:bg-purple-100">Community-Driven</Badge>
-                    <Badge className="bg-orange-50 text-orange-700 hover:bg-orange-100">User-Generated Content</Badge>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
-
-            {/* Website & Tech Stack */}
-            <section id="website-tech" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">Website & Tech Stack</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="premium-shadow border-0">
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      Traffic Overview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={trafficData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis dataKey="month" stroke="#64748b" />
-                          <YAxis stroke="#64748b" />
-                          <Line 
-                            type="monotone" 
-                            dataKey="visitors" 
-                            stroke="#8b5cf6" 
-                            strokeWidth={3}
-                            dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Globe className="w-5 h-5 text-primary" />
+                      <h3 className="font-semibold text-slate-900">Tech Stack</h3>
                     </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="premium-shadow border-0">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Traffic Sources</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={trafficSources}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={40}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                          >
-                            {trafficSources.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 mt-4">
-                      {trafficSources.map((source, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm">
-                          <div 
-                            className="w-3 h-3 rounded-full" 
-                            style={{ backgroundColor: source.color }}
-                          ></div>
-                          <span className="text-slate-600">{source.name}</span>
-                          <span className="font-medium">{source.value}%</span>
+                    <div className="grid grid-cols-3 gap-3">
+                      {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'AWS', 'Redis'].map((tech) => (
+                        <div key={tech} className="text-center p-2 bg-slate-50 rounded-lg">
+                          <span className="text-xs font-medium text-slate-700">{tech}</span>
                         </div>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
               </div>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg">Technology Stack</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <div className="font-medium text-sm text-slate-900">Frontend</div>
-                      <div className="text-xs text-slate-600 mt-1">React, TypeScript</div>
-                    </div>
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <div className="font-medium text-sm text-slate-900">Backend</div>
-                      <div className="text-xs text-slate-600 mt-1">Node.js</div>
-                    </div>
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <div className="font-medium text-sm text-slate-900">Database</div>
-                      <div className="text-xs text-slate-600 mt-1">PostgreSQL</div>
-                    </div>
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <div className="font-medium text-sm text-slate-900">Hosting</div>
-                      <div className="text-xs text-slate-600 mt-1">AWS</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </section>
 
-            {/* Team Collaboration Analysis */}
-            <section id="team-collaboration" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">Team Collaboration Analysis</h2>
-              <div className="grid md:grid-cols-2 gap-6">
+            {/* 3. Audience Insights */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Audience Insights</h2>
+              <div className="grid md:grid-cols-3 gap-6">
                 <Card className="premium-shadow border-0">
                   <CardHeader>
-                    <CardTitle className="text-lg">Active Users Over Time</CardTitle>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      Demographics
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-64">
+                    <div className="h-48">
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={teamCollaborationData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis dataKey="name" stroke="#64748b" />
-                          <YAxis stroke="#64748b" />
-                          <Line 
-                            type="monotone" 
-                            dataKey="users" 
-                            stroke="#3b82f6" 
-                            strokeWidth={3}
-                            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                          />
-                        </LineChart>
+                        <PieChart>
+                          <Pie
+                            data={demographicsData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={30}
+                            outerRadius={60}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {demographicsData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
                       </ResponsiveContainer>
+                    </div>
+                    <div className="space-y-1 mt-2">
+                      {demographicsData.map((item) => (
+                        <div key={item.name} className="flex justify-between text-sm">
+                          <span className="text-slate-600">{item.name}</span>
+                          <span className="font-medium">{item.value}%</span>
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="premium-shadow border-0">
                   <CardHeader>
-                    <CardTitle className="text-lg">Feature Adoption Rates</CardTitle>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Target className="w-5 h-5" />
+                      Personas
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="p-3 bg-slate-50 rounded-lg">
+                      <h4 className="font-medium text-sm">Product Manager</h4>
+                      <p className="text-xs text-slate-600 mt-1">Goal: Streamline team workflows</p>
+                      <p className="text-xs text-slate-500">Pain: Scattered communication</p>
+                    </div>
+                    <div className="p-3 bg-slate-50 rounded-lg">
+                      <h4 className="font-medium text-sm">Engineering Lead</h4>
+                      <p className="text-xs text-slate-600 mt-1">Goal: Improve code collaboration</p>
+                      <p className="text-xs text-slate-500">Pain: Context switching</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Building className="w-5 h-5" />
+                      Target Org Types
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={featureAdoptionData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis dataKey="feature" stroke="#64748b" />
-                          <YAxis stroke="#64748b" />
-                          <Bar dataKey="adoption" fill="#22c55e" />
-                        </BarChart>
-                      </ResponsiveContainer>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline">SaaS</Badge>
+                      <Badge variant="outline">Mid-market</Badge>
+                      <Badge variant="outline">Tech Teams</Badge>
+                      <Badge variant="outline">Startups</Badge>
+                      <Badge variant="outline">Remote-first</Badge>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             </section>
 
-            {/* User Sentiment Analysis */}
-            <section id="user-sentiment" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">User Sentiment Analysis</h2>
+            {/* 4. Market Metrics */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Market Metrics</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-slate-900">$5B</p>
+                      <p className="text-sm text-slate-500">Market Size (TAM)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-slate-900">$14M</p>
+                      <p className="text-sm text-slate-500">Estimated Revenue (ARR)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-slate-900">60K</p>
+                      <p className="text-sm text-slate-500">User Count</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-green-600">+18%</p>
+                      <p className="text-sm text-slate-500">Growth Rate (YoY)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
               <Card className="premium-shadow border-0">
                 <CardHeader>
-                  <CardTitle className="text-lg">Customer Reviews & Feedback</CardTitle>
+                  <CardTitle className="text-lg">Growth Trend</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium text-sm text-slate-900">Positive Review</div>
-                        <div className="text-xs text-slate-500">2 days ago</div>
-                      </div>
-                      <p className="text-sm text-slate-600 mt-2">"Great tool for managing projects and collaborating with team members. Highly recommended!"</p>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium text-sm text-slate-900">Negative Review</div>
-                        <div className="text-xs text-slate-500">5 days ago</div>
-                      </div>
-                      <p className="text-sm text-slate-600 mt-2">"The mobile app is a bit clunky and needs improvement. Overall, the web version is excellent."</p>
-                    </div>
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={marketMetricsData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis dataKey="name" stroke="#64748b" />
+                        <YAxis stroke="#64748b" />
+                        <Bar dataKey="value" fill="#8b5cf6" />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
             </section>
 
-            {/* Pricing & Value Proposition */}
-            <section id="pricing-value" className="space-y-6">
-              <h2 className="text-2xl font-semibold text-slate-900">Pricing & Value Proposition</h2>
+            {/* 5. Brand & Messaging */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Brand & Messaging</h2>
+              <div className="space-y-4">
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="font-medium text-slate-900">Brand Tagline</p>
+                        <p className="text-slate-600">"Work, Together"</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Star className="w-5 h-5 text-primary" />
+                      <p className="font-medium text-slate-900">Tone of Voice</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge className="bg-blue-100 text-blue-800">Bold</Badge>
+                      <Badge className="bg-green-100 text-green-800">Clear</Badge>
+                      <Badge className="bg-purple-100 text-purple-800">Playful</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="premium-shadow border-0">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                      <p className="font-medium text-slate-900">Key USPs</p>
+                    </div>
+                    <ul className="space-y-2 text-sm text-slate-600">
+                      <li>• Real-time collaboration</li>
+                      <li>• Global sync across devices</li>
+                      <li>• Enterprise-grade security</li>
+                      <li>• Seamless integrations</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* 6. Competitor List */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Competitor List</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {competitors.map((competitor) => (
+                  <Card key={competitor.name} className="premium-shadow border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                          {competitor.logo}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-slate-900">{competitor.name}</p>
+                          <p className="text-xs text-slate-500">{competitor.website}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <Badge variant="outline" className="text-xs">
+                          {competitor.category}
+                        </Badge>
+                        <Button size="sm" variant="outline">
+                          Analyse
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* 7. Business Model Canvas */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Business Model Canvas</h2>
               <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg">Pricing Plans Comparison</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Feature</TableHead>
-                        <TableHead>Basic</TableHead>
-                        <TableHead>Pro</TableHead>
-                        <TableHead>Enterprise</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Users</TableCell>
-                        <TableCell>5</TableCell>
-                        <TableCell>25</TableCell>
-                        <TableCell>Unlimited</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Storage</TableCell>
-                        <TableCell>1 GB</TableCell>
-                        <TableCell>10 GB</TableCell>
-                        <TableCell>100 GB</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Support</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Priority Email</TableCell>
-                        <TableCell>24/7 Phone</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                <CardContent className="p-6">
+                  <TooltipProvider>
+                    <div className="grid grid-cols-5 gap-4 h-96">
+                      {/* Row 1 */}
+                      <div className={`${canvasBlocks[0].color} p-4 rounded-lg relative`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[0].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[0].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['key-partners']} onOpenChange={() => toggleBlockExpansion('key-partners')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('key-partners').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[1].color} p-4 rounded-lg`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[1].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[1].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['key-activities']} onOpenChange={() => toggleBlockExpansion('key-activities')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('key-activities').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[2].color} p-4 rounded-lg`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[2].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[2].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['key-resources']} onOpenChange={() => toggleBlockExpansion('key-resources')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('key-resources').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[3].color} p-4 rounded-lg row-span-2`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[3].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[3].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['value-propositions']} onOpenChange={() => toggleBlockExpansion('value-propositions')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('value-propositions').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[6].color} p-4 rounded-lg row-span-2`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[6].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[6].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['customer-segments']} onOpenChange={() => toggleBlockExpansion('customer-segments')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('customer-segments').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      {/* Row 2 */}
+                      <div className={`${canvasBlocks[4].color} p-4 rounded-lg`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[4].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[4].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['customer-relationships']} onOpenChange={() => toggleBlockExpansion('customer-relationships')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('customer-relationships').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[5].color} p-4 rounded-lg`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[5].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[5].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['channels']} onOpenChange={() => toggleBlockExpansion('channels')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('channels').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      {/* Row 3 spans full width */}
+                      <div className={`${canvasBlocks[7].color} p-4 rounded-lg col-span-2`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[7].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[7].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['cost-structure']} onOpenChange={() => toggleBlockExpansion('cost-structure')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('cost-structure').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      <div className={`${canvasBlocks[8].color} p-4 rounded-lg col-span-2`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-medium text-sm">{canvasBlocks[8].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4 text-slate-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs max-w-48">{canvasBlocks[8].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Collapsible open={expandedBlocks['revenue-streams']} onOpenChange={() => toggleBlockExpansion('revenue-streams')}>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
+                              Click to expand...
+                              <ChevronDown className="w-3 h-3" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            <ul className="space-y-1">
+                              {getCanvasBlockContent('revenue-streams').map((item, index) => (
+                                <li key={index} className="text-xs">• {item}</li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+                    </div>
+                  </TooltipProvider>
                 </CardContent>
               </Card>
             </section>
+
           </div>
         </div>
       </main>
