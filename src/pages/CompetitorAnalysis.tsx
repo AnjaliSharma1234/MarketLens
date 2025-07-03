@@ -1,441 +1,553 @@
-
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Sidebar from "@/components/Sidebar";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { 
+  ArrowLeft, 
   Globe, 
   Users, 
   TrendingUp, 
-  Calendar,
-  MapPin,
-  DollarSign,
-  Target,
-  Award,
-  ExternalLink
+  Star,
+  ExternalLink,
+  Download,
+  Share2
 } from "lucide-react";
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar
+} from "recharts";
 
 const CompetitorAnalysis = () => {
   const { companyName } = useParams();
+  const [showHighIntentKeywords, setShowHighIntentKeywords] = useState(false);
 
-  // Dummy data for charts
+  // Dummy data for charts and tables
+  const teamCollaborationData = [
+    { name: 'Q1', users: 1200 },
+    { name: 'Q2', users: 1500 },
+    { name: 'Q3', users: 1800 },
+    { name: 'Q4', users: 2100 },
+  ];
+
+  const featureAdoptionData = [
+    { feature: 'Tasks', adoption: 85 },
+    { feature: 'Calendar', adoption: 70 },
+    { feature: 'Docs', adoption: 60 },
+    { feature: 'Goals', adoption: 45 },
+  ];
+
   const trafficData = [
-    { month: 'Jan', visits: 850000 },
-    { month: 'Feb', visits: 920000 },
-    { month: 'Mar', visits: 1100000 },
-    { month: 'Apr', visits: 1350000 },
-    { month: 'May', visits: 1200000 },
-    { month: 'Jun', visits: 1450000 },
+    { month: 'Jan', visitors: 45000 },
+    { month: 'Feb', visitors: 52000 },
+    { month: 'Mar', visitors: 48000 },
+    { month: 'Apr', visitors: 61000 },
+    { month: 'May', visitors: 55000 },
+    { month: 'Jun', visitors: 67000 },
   ];
 
   const trafficSources = [
-    { name: 'Direct', value: 45, color: '#7B61FF' },
-    { name: 'Organic', value: 30, color: '#06D6A0' },
-    { name: 'Paid', value: 15, color: '#FFD166' },
-    { name: 'Social', value: 10, color: '#F72585' },
+    { name: 'Direct', value: 40, color: '#8884d8' },
+    { name: 'Organic Search', value: 30, color: '#82ca9d' },
+    { name: 'Paid Search', value: 15, color: '#ffc658' },
+    { name: 'Social', value: 10, color: '#ff7300' },
+    { name: 'Referral', value: 5, color: '#8dd1e1' },
   ];
 
-  const competitors = [
-    { name: 'Slack', logo: '🟣', similarity: '92%' },
-    { name: 'Microsoft Teams', logo: '🔵', similarity: '88%' },
-    { name: 'Discord', logo: '🟢', similarity: '75%' },
+  const keywordData = [
+    { keyword: "project management", volume: "5,400", intent: "high" },
+    { keyword: "team collaboration", volume: "3,200", intent: "high" },
+    { keyword: "task tracking", volume: "2,800", intent: "medium" },
+    { keyword: "workflow automation", volume: "1,900", intent: "high" },
+    { keyword: "productivity tools", volume: "4,100", intent: "medium" },
+    { keyword: "remote work", volume: "6,500", intent: "low" },
+    { keyword: "agile methodology", volume: "1,200", intent: "high" },
+    { keyword: "kanban board", volume: "890", intent: "high" },
+  ];
+
+  const filteredKeywords = showHighIntentKeywords 
+    ? keywordData.filter(k => k.intent === "high")
+    : keywordData;
+
+  const businessModelCards = [
+    { title: "Business Model", value: "SaaS", type: "tag" },
+    { title: "Pricing", value: "$49/mo", type: "value" },
+    { title: "Market Type", value: "B2B", type: "tag" },
+    { title: "Pricing Tiers", value: ["Free", "Pro", "Enterprise"], type: "pills" },
+    { title: "Sales Channels", value: ["Website", "Agency Partners"], type: "tags" },
+    { title: "Payment Options", value: ["Stripe", "PayPal", "Apple Pay"], type: "icons" },
   ];
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <main className="flex-1 p-8">
-        <div className="max-w-6xl mx-auto space-y-8">
-          
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">Competitive Analysis</h1>
-              <p className="text-slate-600 mt-1">Deep market intelligence for {companyName}</p>
+      <main className="flex-1">
+        <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 z-10">
+          <div className="flex items-center justify-between max-w-6xl mx-auto">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Button>
+              <div className="h-6 w-px bg-slate-200" />
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">{companyName} Analysis</h1>
+                <p className="text-sm text-slate-500">Comprehensive competitive intelligence report</p>
+              </div>
             </div>
-            <Button className="bg-primary hover:bg-primary/90">
-              Export Report
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+              <Button size="sm" className="bg-primary hover:bg-primary/90">
+                <Download className="w-4 h-4 mr-2" />
+                Export PDF
+              </Button>
+            </div>
           </div>
+        </div>
 
-          {/* Section 1: Company Overview */}
-          <section id="company-overview" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Company Overview</h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                      {companyName?.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold">{companyName}</h3>
-                      <p className="text-sm text-slate-500">Team Collaboration Platform</p>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-slate-400" />
-                      <span>Founded: 2013</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-slate-400" />
-                      <span>San Francisco, CA</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-slate-400" />
-                      <span>2,500+ employees</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-slate-400" />
-                      <span>$340M funding</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+        <div className="p-8">
+          <div className="max-w-6xl mx-auto space-y-12">
 
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Key Milestones</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {[
-                      { year: '2013', event: 'Company founded' },
-                      { year: '2014', event: 'First $1M ARR' },
-                      { year: '2019', event: 'IPO Launch' },
-                      { year: '2021', event: 'Acquired by Salesforce' },
-                    ].map((milestone, index) => (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="font-medium text-sm">{milestone.year}</span>
-                        <span className="text-sm text-slate-600">{milestone.event}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 2: Brand & Messaging */}
-          <section id="brand-messaging" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Brand & Messaging</h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Brand Tagline</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-medium text-slate-700">"Where work happens"</p>
-                  <p className="text-sm text-slate-500 mt-2">Focus on productivity and collaboration</p>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Tone of Voice</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Friendly</Badge>
-                    <Badge variant="secondary">Professional</Badge>
-                    <Badge variant="secondary">Approachable</Badge>
-                    <Badge variant="secondary">Confident</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Key USPs</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Real-time messaging</li>
-                    <li>• Seamless integrations</li>
-                    <li>• Organized channels</li>
-                    <li>• Remote-first culture</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 3: Product */}
-          <section id="product" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Product Analysis</h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Core Features</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span>Messaging & Channels</span>
-                      <Badge>Core</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>File Sharing</span>
-                      <Badge>Core</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Video Calls</span>
-                      <Badge>Advanced</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Workflow Automation</span>
-                      <Badge>Advanced</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Platform Availability</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-green-500" />
-                      <span className="text-sm">Web App</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                      <span className="text-sm">iOS App</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-green-500 rounded"></div>
-                      <span className="text-sm">Android</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-purple-500 rounded"></div>
-                      <span className="text-sm">Desktop</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 4: Website & Tech Stack */}
-          <section id="website-tech" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Website & Technology</h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Website Traffic</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={trafficData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="visits" stroke="#7B61FF" strokeWidth={3} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Traffic Sources</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={trafficSources}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          dataKey="value"
-                        >
-                          {trafficSources.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 mt-4">
-                    {trafficSources.map((source, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: source.color }}
-                        ></div>
-                        <span>{source.name}: {source.value}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 5: Business & Pricing */}
-          <section id="business-pricing" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Business Model & Pricing</h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Free</CardTitle>
-                  <p className="text-2xl font-bold">$0</p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• 10K message history</li>
-                    <li>• 10 integrations</li>
-                    <li>• 1:1 video calls</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0 ring-2 ring-primary">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    Pro
-                    <Badge className="bg-primary">Popular</Badge>
-                  </CardTitle>
-                  <p className="text-2xl font-bold">$7.25<span className="text-sm font-normal">/month</span></p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Unlimited message history</li>
-                    <li>• Unlimited integrations</li>
-                    <li>• Group video calls</li>
-                    <li>• Guest access</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0">
-                <CardHeader>
-                  <CardTitle>Enterprise Grid</CardTitle>
-                  <p className="text-2xl font-bold">$15</p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Organization-wide</li>
-                    <li>• Advanced security</li>
-                    <li>• Compliance features</li>
-                    <li>• Premium support</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 6: SWOT Analysis */}
-          <section id="swot-analysis" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">SWOT Analysis</h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="premium-shadow border-0 border-l-4 border-l-green-500">
-                <CardHeader>
-                  <CardTitle className="text-green-700">Strengths</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Market leader in team collaboration</li>
-                    <li>• Strong brand recognition</li>
-                    <li>• Extensive integration ecosystem</li>
-                    <li>• User-friendly interface</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0 border-l-4 border-l-red-500">
-                <CardHeader>
-                  <CardTitle className="text-red-700">Weaknesses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• High pricing for small teams</li>
-                    <li>• Information overload in large channels</li>
-                    <li>• Limited project management features</li>
-                    <li>• Dependency on internet connectivity</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0 border-l-4 border-l-blue-500">
-                <CardHeader>
-                  <CardTitle className="text-blue-700">Opportunities</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• AI integration and automation</li>
-                    <li>• Expansion into new markets</li>
-                    <li>• Enhanced mobile experience</li>
-                    <li>• Industry-specific solutions</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="premium-shadow border-0 border-l-4 border-l-yellow-500">
-                <CardHeader>
-                  <CardTitle className="text-yellow-700">Threats</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Microsoft Teams integration</li>
-                    <li>• Economic downturn affecting subscriptions</li>
-                    <li>• Security and privacy concerns</li>
-                    <li>• Emerging collaboration platforms</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Section 7: Top Competitors */}
-          <section id="competitors" className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-2">Top Competitors</h2>
-            
-            <div className="space-y-4">
-              {competitors.map((competitor, index) => (
-                <Card key={index} className="premium-shadow border-0">
+            {/* Company Overview */}
+            <section id="company-overview" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Company Overview</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="premium-shadow border-0">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-2xl">
-                          {competitor.logo}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-slate-900">{competitor.name}</h3>
-                          <p className="text-sm text-slate-500">Similarity: {competitor.similarity}</p>
-                        </div>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+                        {companyName?.[0]?.toUpperCase()}
                       </div>
-                      <Button variant="outline" size="sm">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View Analysis
-                      </Button>
+                      <div>
+                        <h3 className="text-xl font-semibold text-slate-900">{companyName}</h3>
+                        <p className="text-slate-500">Founded 2013</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Founders:</span>
+                        <span className="text-slate-900">Ivan Zhao, Simon Last</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Headquarters:</span>
+                        <span className="text-slate-900">San Francisco, CA</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Funding:</span>
+                        <span className="text-slate-900">$343M Series C</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Employees:</span>
+                        <span className="text-slate-900">500-1000</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </section>
+                
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Major Milestones</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div>
+                        <p className="font-medium text-sm">2013 - Founded</p>
+                        <p className="text-xs text-slate-500">Started as personal productivity tool</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div>
+                        <p className="font-medium text-sm">2019 - Series A</p>
+                        <p className="text-xs text-slate-500">$10M funding round</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div>
+                        <p className="font-medium text-sm">2021 - Series B</p>
+                        <p className="text-xs text-slate-500">$275M at $10B valuation</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div>
+                        <p className="font-medium text-sm">2024 - Global Expansion</p>
+                        <p className="text-xs text-slate-500">20M+ users worldwide</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* Business Model & Monetization */}
+            <section id="business-model" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Business Model & Monetization</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {businessModelCards.map((card, index) => (
+                  <Card key={index} className="premium-shadow border-0">
+                    <CardContent className="p-4">
+                      <h3 className="font-medium text-sm text-slate-600 mb-2">{card.title}</h3>
+                      <div className="space-y-2">
+                        {card.type === "tag" && (
+                          <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
+                            {card.value}
+                          </Badge>
+                        )}
+                        {card.type === "value" && (
+                          <p className="font-semibold text-lg text-slate-900">{card.value}</p>
+                        )}
+                        {card.type === "pills" && (
+                          <div className="flex flex-wrap gap-1">
+                            {(card.value as string[]).map((item, i) => (
+                              <Badge key={i} variant="outline" className="text-xs">
+                                {item}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        {card.type === "tags" && (
+                          <div className="flex flex-wrap gap-1">
+                            {(card.value as string[]).map((item, i) => (
+                              <Badge key={i} className="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs">
+                                {item}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        {card.type === "icons" && (
+                          <div className="flex flex-wrap gap-1">
+                            {(card.value as string[]).map((item, i) => (
+                              <Badge key={i} variant="outline" className="text-xs">
+                                {item}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 italic">
+                *Pricing inferred from website + review sources.
+              </p>
+            </section>
+
+            {/* Marketing & SEO */}
+            <section id="marketing-seo" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Marketing & SEO</h2>
+              
+              {/* Targeted Keywords Section */}
+              <Card className="premium-shadow border-0">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Targeted Keywords</CardTitle>
+                    <div className="flex items-center space-x-2">
+                      <label htmlFor="high-intent" className="text-sm text-slate-600">
+                        Show Only High-Intent Keywords
+                      </label>
+                      <Switch
+                        id="high-intent"
+                        checked={showHighIntentKeywords}
+                        onCheckedChange={setShowHighIntentKeywords}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Extracted from homepage meta + blog articles + ads
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Keyword</TableHead>
+                        <TableHead className="text-right">Monthly Volume</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredKeywords.map((keyword, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{keyword.keyword}</TableCell>
+                          <TableCell className="text-right">{keyword.volume}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              {/* Rest of Marketing & SEO content */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Social Media Presence</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                      <span className="font-medium text-sm">Twitter</span>
+                      <span className="text-slate-600">142K followers</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                      <span className="font-medium text-sm">LinkedIn</span>
+                      <span className="text-slate-600">89K followers</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                      <span className="font-medium text-sm">Instagram</span>
+                      <span className="text-slate-600">45K followers</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Content Strategy</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100">Educational Content</Badge>
+                    <Badge className="bg-green-50 text-green-700 hover:bg-green-100">Product-Led Growth</Badge>
+                    <Badge className="bg-purple-50 text-purple-700 hover:bg-purple-100">Community-Driven</Badge>
+                    <Badge className="bg-orange-50 text-orange-700 hover:bg-orange-100">User-Generated Content</Badge>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* Website & Tech Stack */}
+            <section id="website-tech" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Website & Tech Stack</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Traffic Overview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={trafficData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="month" stroke="#64748b" />
+                          <YAxis stroke="#64748b" />
+                          <Line 
+                            type="monotone" 
+                            dataKey="visitors" 
+                            stroke="#8b5cf6" 
+                            strokeWidth={3}
+                            dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Traffic Sources</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={trafficSources}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={40}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {trafficSources.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      {trafficSources.map((source, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: source.color }}
+                          ></div>
+                          <span className="text-slate-600">{source.name}</span>
+                          <span className="font-medium">{source.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="premium-shadow border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg">Technology Stack</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <div className="font-medium text-sm text-slate-900">Frontend</div>
+                      <div className="text-xs text-slate-600 mt-1">React, TypeScript</div>
+                    </div>
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <div className="font-medium text-sm text-slate-900">Backend</div>
+                      <div className="text-xs text-slate-600 mt-1">Node.js</div>
+                    </div>
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <div className="font-medium text-sm text-slate-900">Database</div>
+                      <div className="text-xs text-slate-600 mt-1">PostgreSQL</div>
+                    </div>
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <div className="font-medium text-sm text-slate-900">Hosting</div>
+                      <div className="text-xs text-slate-600 mt-1">AWS</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Team Collaboration Analysis */}
+            <section id="team-collaboration" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Team Collaboration Analysis</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Active Users Over Time</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={teamCollaborationData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="name" stroke="#64748b" />
+                          <YAxis stroke="#64748b" />
+                          <Line 
+                            type="monotone" 
+                            dataKey="users" 
+                            stroke="#3b82f6" 
+                            strokeWidth={3}
+                            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="premium-shadow border-0">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Feature Adoption Rates</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={featureAdoptionData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="feature" stroke="#64748b" />
+                          <YAxis stroke="#64748b" />
+                          <Bar dataKey="adoption" fill="#22c55e" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* User Sentiment Analysis */}
+            <section id="user-sentiment" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">User Sentiment Analysis</h2>
+              <Card className="premium-shadow border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg">Customer Reviews & Feedback</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-slate-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium text-sm text-slate-900">Positive Review</div>
+                        <div className="text-xs text-slate-500">2 days ago</div>
+                      </div>
+                      <p className="text-sm text-slate-600 mt-2">"Great tool for managing projects and collaborating with team members. Highly recommended!"</p>
+                    </div>
+                    <div className="p-4 bg-slate-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium text-sm text-slate-900">Negative Review</div>
+                        <div className="text-xs text-slate-500">5 days ago</div>
+                      </div>
+                      <p className="text-sm text-slate-600 mt-2">"The mobile app is a bit clunky and needs improvement. Overall, the web version is excellent."</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Pricing & Value Proposition */}
+            <section id="pricing-value" className="space-y-6">
+              <h2 className="text-2xl font-semibold text-slate-900">Pricing & Value Proposition</h2>
+              <Card className="premium-shadow border-0">
+                <CardHeader>
+                  <CardTitle className="text-lg">Pricing Plans Comparison</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Feature</TableHead>
+                        <TableHead>Basic</TableHead>
+                        <TableHead>Pro</TableHead>
+                        <TableHead>Enterprise</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Users</TableCell>
+                        <TableCell>5</TableCell>
+                        <TableCell>25</TableCell>
+                        <TableCell>Unlimited</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Storage</TableCell>
+                        <TableCell>1 GB</TableCell>
+                        <TableCell>10 GB</TableCell>
+                        <TableCell>100 GB</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Support</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Priority Email</TableCell>
+                        <TableCell>24/7 Phone</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </section>
+          </div>
         </div>
       </main>
     </div>

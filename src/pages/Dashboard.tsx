@@ -24,21 +24,21 @@ const Dashboard = () => {
       company: "Notion",
       date: "2 hours ago",
       status: "completed",
-      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=300&fit=crop"
+      initials: "NS"
     },
     {
       id: 2,
       company: "Figma",
       date: "1 day ago",
       status: "completed",
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop"
+      initials: "FG"
     },
     {
       id: 3,
       company: "Linear",
       date: "3 days ago",
       status: "completed",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop"
+      initials: "LR"
     }
   ];
 
@@ -108,28 +108,28 @@ const Dashboard = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {recentAnalyses.map((analysis) => (
                 <Card key={analysis.id} className="group cursor-pointer hover:shadow-lg transition-all duration-200 border-0 premium-shadow">
-                  <CardHeader className="p-0">
-                    <div className="relative h-32 bg-gradient-to-br from-slate-100 to-slate-200 rounded-t-lg overflow-hidden">
-                      <img 
-                        src={analysis.image} 
-                        alt={analysis.company}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                  <CardHeader className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
+                        {analysis.initials}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-slate-900 group-hover:text-primary transition-colors">
+                          {analysis.company}
+                        </h3>
+                        <p className="text-sm text-slate-500">{analysis.date}</p>
+                      </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <h3 className="font-semibold text-slate-900 group-hover:text-primary transition-colors">
-                        {analysis.company}
-                      </h3>
-                      <div className="flex items-center justify-between text-sm text-slate-500">
-                        <span>{analysis.date}</span>
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                          {analysis.status}
-                        </span>
-                      </div>
+                  <CardContent className="p-4 pt-0">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                        {analysis.status}
+                      </span>
+                      <Button size="sm" variant="outline">
+                        View
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

@@ -12,48 +12,42 @@ const SavedReports = () => {
       company: "Notion",
       date: "Dec 15, 2024",
       status: "completed",
-      score: 8.7,
-      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=300&fit=crop"
+      initials: "NS"
     },
     {
       id: 2,
       company: "Figma",
       date: "Dec 14, 2024",
       status: "completed",
-      score: 9.2,
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop"
+      initials: "FG"
     },
     {
       id: 3,
       company: "Linear",
       date: "Dec 12, 2024",
       status: "completed",
-      score: 8.1,
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop"
+      initials: "LR"
     },
     {
       id: 4,
       company: "Airtable",
       date: "Dec 10, 2024",
       status: "completed",
-      score: 7.9,
-      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop"
+      initials: "AT"
     },
     {
       id: 5,
       company: "Miro",
       date: "Dec 8, 2024",
       status: "completed",
-      score: 8.5,
-      image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=300&fit=crop"
+      initials: "MR"
     },
     {
       id: 6,
       company: "Canva",
       date: "Dec 5, 2024",
       status: "completed",
-      score: 9.0,
-      image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=300&fit=crop"
+      initials: "CV"
     }
   ];
 
@@ -89,7 +83,7 @@ const SavedReports = () => {
             <Card className="border-0 premium-shadow">
               <CardContent className="p-6 text-center">
                 <div className="text-2xl font-bold text-slate-900">8.4</div>
-                <div className="text-sm text-slate-600">Avg. Score</div>
+                <div className="text-sm text-slate-600">Avg Insights</div>
               </CardContent>
             </Card>
             <Card className="border-0 premium-shadow">
@@ -110,34 +104,28 @@ const SavedReports = () => {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {reports.map((report) => (
               <Card key={report.id} className="group hover:shadow-lg transition-all duration-200 border-0 premium-shadow">
-                <CardHeader className="p-0">
-                  <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 rounded-t-lg overflow-hidden">
-                    <img 
-                      src={report.image} 
-                      alt={report.company}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-white/90 text-slate-700 hover:bg-white">
-                        Score: {report.score}
-                      </Badge>
+                <CardHeader className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
+                      {report.initials}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-slate-900 group-hover:text-primary transition-colors">
+                        {report.company}
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>{report.date}</span>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="p-4 space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg text-slate-900 group-hover:text-primary transition-colors">
-                      {report.company}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                      <Calendar className="w-4 h-4" />
-                      <span>{report.date}</span>
-                      <Badge variant="outline" className="ml-auto text-green-700 border-green-200">
-                        {report.status}
-                      </Badge>
-                    </div>
+                <CardContent className="p-4 pt-0 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-green-700 border-green-200">
+                      {report.status}
+                    </Badge>
                   </div>
                   
                   <div className="flex items-center gap-2">
