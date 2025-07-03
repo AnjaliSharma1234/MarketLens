@@ -1,11 +1,15 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/Sidebar";
-import { Calendar, Download, Eye, Trash2 } from "lucide-react";
+import { Calendar, Download, Eye, Trash2, Search } from "lucide-react";
 
 const SavedReports = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const reports = [
     {
       id: 1,
@@ -51,6 +55,10 @@ const SavedReports = () => {
     }
   ];
 
+  const filteredReports = reports.filter(report =>
+    report.company.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
@@ -72,37 +80,25 @@ const SavedReports = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="border-0 premium-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900">{reports.length}</div>
-                <div className="text-sm text-slate-600">Total Reports</div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 premium-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900">8.4</div>
-                <div className="text-sm text-slate-600">Avg Insights</div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 premium-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900">12</div>
-                <div className="text-sm text-slate-600">This Month</div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 premium-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900">38</div>
-                <div className="text-sm text-slate-600">Remaining</div>
-              </CardContent>
-            </Card>
+          {/* Search Bar */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search reports by company name"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 border-slate-200 focus:border-primary"
+              />
+            </div>
+            <p className="text-sm text-slate-500">
+              {filteredReports.length} reports saved
+            </p>
           </div>
 
           {/* Reports Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {reports.map((report) => (
+            {filteredReports.map((report) => (
               <Card key={report.id} className="group hover:shadow-lg transition-all duration-200 border-0 premium-shadow">
                 <CardHeader className="p-4">
                   <div className="flex items-center gap-3">

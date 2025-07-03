@@ -40,8 +40,6 @@ import {
 
 const CompetitorAnalysis = () => {
   const { companyName } = useParams();
-  const [selectedCanvasBlock, setSelectedCanvasBlock] = useState<string | null>(null);
-  const [expandedBlocks, setExpandedBlocks] = useState<Record<string, boolean>>({});
 
   // Sample data for charts
   const demographicsData = [
@@ -66,44 +64,76 @@ const CompetitorAnalysis = () => {
   ];
 
   const canvasBlocks = [
-    { id: 'key-partners', title: 'Key Partners', color: 'bg-blue-50', description: 'Network of suppliers and partners that make the business model work' },
-    { id: 'key-activities', title: 'Key Activities', color: 'bg-green-50', description: 'Most important things a company must do to make its business model work' },
-    { id: 'key-resources', title: 'Key Resources', color: 'bg-purple-50', description: 'Most important assets required to make a business model work' },
-    { id: 'value-propositions', title: 'Value Propositions', color: 'bg-orange-50', description: 'Bundle of products and services that create value for a specific customer segment' },
-    { id: 'customer-relationships', title: 'Customer Relationships', color: 'bg-pink-50', description: 'Types of relationships a company establishes with specific customer segments' },
-    { id: 'channels', title: 'Channels', color: 'bg-indigo-50', description: 'How a company communicates with and reaches its customer segments' },
-    { id: 'customer-segments', title: 'Customer Segments', color: 'bg-teal-50', description: 'Different groups of people or organizations an enterprise aims to reach and serve' },
-    { id: 'cost-structure', title: 'Cost Structure', color: 'bg-red-50', description: 'All costs incurred to operate a business model' },
-    { id: 'revenue-streams', title: 'Revenue Streams', color: 'bg-yellow-50', description: 'Cash a company generates from each customer segment' },
+    { 
+      id: 'key-partners', 
+      title: 'Key Partners', 
+      color: 'bg-blue-50', 
+      description: 'The network of suppliers and partners that make the business model work.',
+      content: ['Technology providers', 'Integration partners', 'Consulting firms', 'Cloud infrastructure providers']
+    },
+    { 
+      id: 'key-activities', 
+      title: 'Key Activities', 
+      color: 'bg-green-50', 
+      description: 'Core actions required to deliver value to customers.',
+      content: ['Product development', 'Customer support', 'Marketing & sales', 'Platform maintenance']
+    },
+    { 
+      id: 'key-resources', 
+      title: 'Key Resources', 
+      color: 'bg-purple-50', 
+      description: 'Assets and infrastructure required to deliver the value proposition.',
+      content: ['Development team', 'Brand reputation', 'Technology platform', 'Customer data']
+    },
+    { 
+      id: 'value-propositions', 
+      title: 'Value Propositions', 
+      color: 'bg-orange-50', 
+      description: 'The unique value you\'re offering to the customer.',
+      content: ['Real-time collaboration', 'Unified workspace', 'Cross-platform sync', 'Enterprise security']
+    },
+    { 
+      id: 'customer-relationships', 
+      title: 'Customer Relationships', 
+      color: 'bg-pink-50', 
+      description: 'Types of relationships expected and maintained with customers.',
+      content: ['Self-service support', 'Community forums', 'Dedicated account management', 'Automated assistance']
+    },
+    { 
+      id: 'channels', 
+      title: 'Channels', 
+      color: 'bg-indigo-50', 
+      description: 'Ways the company delivers value and interacts with customers.',
+      content: ['Direct sales', 'Online marketing', 'Partner channels', 'App stores']
+    },
+    { 
+      id: 'customer-segments', 
+      title: 'Customer Segments', 
+      color: 'bg-teal-50', 
+      description: 'Specific groups of people or organizations being targeted.',
+      content: ['Small teams', 'Enterprise organizations', 'Remote workers', 'Creative agencies']
+    },
+    { 
+      id: 'cost-structure', 
+      title: 'Cost Structure', 
+      color: 'bg-red-50', 
+      description: 'All major costs involved in operating the business model.',
+      content: ['Development costs', 'Infrastructure costs', 'Marketing expenses', 'Personnel costs']
+    },
+    { 
+      id: 'revenue-streams', 
+      title: 'Revenue Streams', 
+      color: 'bg-yellow-50', 
+      description: 'How the business earns money from each customer segment.',
+      content: ['Subscription fees', 'Enterprise licenses', 'Premium features', 'Add-on services']
+    },
   ];
-
-  const getCanvasBlockContent = (blockId: string) => {
-    const content: Record<string, string[]> = {
-      'key-partners': ['Technology providers', 'Integration partners', 'Consulting firms', 'Cloud infrastructure providers'],
-      'key-activities': ['Product development', 'Customer support', 'Marketing & sales', 'Platform maintenance'],
-      'key-resources': ['Development team', 'Brand reputation', 'Technology platform', 'Customer data'],
-      'value-propositions': ['Real-time collaboration', 'Unified workspace', 'Cross-platform sync', 'Enterprise security'],
-      'customer-relationships': ['Self-service support', 'Community forums', 'Dedicated account management', 'Automated assistance'],
-      'channels': ['Direct sales', 'Online marketing', 'Partner channels', 'App stores'],
-      'customer-segments': ['Small teams', 'Enterprise organizations', 'Remote workers', 'Creative agencies'],
-      'cost-structure': ['Development costs', 'Infrastructure costs', 'Marketing expenses', 'Personnel costs'],
-      'revenue-streams': ['Subscription fees', 'Enterprise licenses', 'Premium features', 'Add-on services'],
-    };
-    return content[blockId] || [];
-  };
-
-  const toggleBlockExpansion = (blockId: string) => {
-    setExpandedBlocks(prev => ({
-      ...prev,
-      [blockId]: !prev[blockId]
-    }));
-  };
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 z-10">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
@@ -131,8 +161,8 @@ const CompetitorAnalysis = () => {
           </div>
         </div>
 
-        <div className="p-8">
-          <div className="max-w-6xl mx-auto space-y-12">
+        <div className="p-8 max-w-6xl mx-auto">
+          <div className="space-y-12">
 
             {/* 1. Company Overview - Keep existing */}
             <section className="space-y-6">
@@ -385,45 +415,57 @@ const CompetitorAnalysis = () => {
               </Card>
             </section>
 
-            {/* 5. Brand & Messaging */}
+            {/* 5. Brand & Messaging - Updated horizontal layout */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Brand & Messaging</h2>
-              <div className="space-y-4">
+              <div className="grid md:grid-cols-3 gap-6">
                 <Card className="premium-shadow border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-2">
                       <MessageSquare className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="font-medium text-slate-900">Brand Tagline</p>
-                        <p className="text-slate-600">"Work, Together"</p>
-                      </div>
+                      <p className="font-medium text-slate-900">Brand Tagline</p>
                     </div>
+                    <p className="text-slate-600 text-lg font-semibold">"Work, Together"</p>
                   </CardContent>
                 </Card>
+
                 <Card className="premium-shadow border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
                       <Star className="w-5 h-5 text-primary" />
                       <p className="font-medium text-slate-900">Tone of Voice</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex justify-center gap-2">
                       <Badge className="bg-blue-100 text-blue-800">Bold</Badge>
                       <Badge className="bg-green-100 text-green-800">Clear</Badge>
                       <Badge className="bg-purple-100 text-purple-800">Playful</Badge>
                     </div>
                   </CardContent>
                 </Card>
+
                 <Card className="premium-shadow border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
                       <TrendingUp className="w-5 h-5 text-primary" />
                       <p className="font-medium text-slate-900">Key USPs</p>
                     </div>
                     <ul className="space-y-2 text-sm text-slate-600">
-                      <li>• Real-time collaboration</li>
-                      <li>• Global sync across devices</li>
-                      <li>• Enterprise-grade security</li>
-                      <li>• Seamless integrations</li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        Real-time collaboration
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        Global sync across devices
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        Enterprise-grade security
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        Seamless integrations
+                      </li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -460,275 +502,185 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 7. Business Model Canvas */}
+            {/* 7. Business Model Canvas - Updated layout */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Business Model Canvas</h2>
               <Card className="premium-shadow border-0">
                 <CardContent className="p-6">
                   <TooltipProvider>
-                    <div className="grid grid-cols-5 gap-4 h-96">
+                    <div className="grid grid-cols-5 gap-4 min-h-[500px]">
                       {/* Row 1 */}
-                      <div className={`${canvasBlocks[0].color} p-4 rounded-lg relative`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[0].title}</h3>
+                      <div className={`${canvasBlocks[0].color} p-4 rounded-lg`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[0].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[0].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[0].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['key-partners']} onOpenChange={() => toggleBlockExpansion('key-partners')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('key-partners').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[0].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[1].color} p-4 rounded-lg`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[1].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[1].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[1].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[1].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['key-activities']} onOpenChange={() => toggleBlockExpansion('key-activities')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('key-activities').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[1].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[2].color} p-4 rounded-lg`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[2].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[2].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[2].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[2].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['key-resources']} onOpenChange={() => toggleBlockExpansion('key-resources')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('key-resources').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[2].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[3].color} p-4 rounded-lg row-span-2`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[3].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[3].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[3].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[3].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['value-propositions']} onOpenChange={() => toggleBlockExpansion('value-propositions')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('value-propositions').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[3].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[6].color} p-4 rounded-lg row-span-2`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[6].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[6].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[6].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[6].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['customer-segments']} onOpenChange={() => toggleBlockExpansion('customer-segments')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('customer-segments').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[6].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       {/* Row 2 */}
                       <div className={`${canvasBlocks[4].color} p-4 rounded-lg`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[4].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[4].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[4].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[4].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['customer-relationships']} onOpenChange={() => toggleBlockExpansion('customer-relationships')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('customer-relationships').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[4].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[5].color} p-4 rounded-lg`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[5].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[5].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[5].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[5].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['channels']} onOpenChange={() => toggleBlockExpansion('channels')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('channels').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[5].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
-                      {/* Row 3 spans full width */}
+                      {/* Row 3 */}
                       <div className={`${canvasBlocks[7].color} p-4 rounded-lg col-span-2`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[7].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[7].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[7].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[7].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['cost-structure']} onOpenChange={() => toggleBlockExpansion('cost-structure')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('cost-structure').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[7].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
 
                       <div className={`${canvasBlocks[8].color} p-4 rounded-lg col-span-2`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-sm">{canvasBlocks[8].title}</h3>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[8].title}</h3>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-slate-500" />
+                              <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
                             </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs max-w-48">{canvasBlocks[8].description}</p>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[8].description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
-                        <Collapsible open={expandedBlocks['revenue-streams']} onOpenChange={() => toggleBlockExpansion('revenue-streams')}>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-left flex items-center gap-1">
-                              Click to expand...
-                              <ChevronDown className="w-3 h-3" />
-                            </Button>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2">
-                            <ul className="space-y-1">
-                              {getCanvasBlockContent('revenue-streams').map((item, index) => (
-                                <li key={index} className="text-xs">• {item}</li>
-                              ))}
-                            </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[8].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   </TooltipProvider>
