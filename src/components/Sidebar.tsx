@@ -56,16 +56,16 @@ const Sidebar = () => {
       <div className="absolute bottom-6 left-4 right-4">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-violet-300 w-full max-w-[230px]">
           <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-slate-600" />
+            <User className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">Anjali Sharma</p>
+            <p className="text-sm font-medium text-white truncate">Anjali Sharma</p>
           </div>
           <button 
             onClick={handleSettingsClick} 
-            className="p-1 hover:bg-white rounded transition-colors"
+            className="p-1 hover:bg-white/20 rounded transition-colors"
           >
-            <Settings className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+            <Settings className="w-4 h-4 text-white hover:text-white" />
           </button>
         </div>
       </div>

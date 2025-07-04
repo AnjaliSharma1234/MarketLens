@@ -7,8 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import StepTracker from "./StepTracker";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, X } from "lucide-react";
 
 const steps = ["Your Company", "Select Competitor", "Context", "Generating Report"];
 
@@ -54,6 +55,7 @@ const CompetitorAnalysisFlow = () => {
     goal: ""
   });
   const [customCompetitor, setCustomCompetitor] = useState("");
+  const [addedCompetitor, setAddedCompetitor] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
 
@@ -69,16 +71,22 @@ const CompetitorAnalysisFlow = () => {
     
     // Simulate report generation
     setTimeout(() => {
-      const competitorName = formData.competitor || customCompetitor;
+      const competitorName = formData.competitor || addedCompetitor;
       navigate(`/analysis/${encodeURIComponent(competitorName)}`);
     }, 3000);
   };
 
   const addCustomCompetitor = () => {
     if (customCompetitor.trim()) {
+      setAddedCompetitor(customCompetitor);
       setFormData({ ...formData, competitor: customCompetitor });
       setCustomCompetitor("");
     }
+  };
+
+  const removeCustomCompetitor = () => {
+    setAddedCompetitor("");
+    setFormData({ ...formData, competitor: "" });
   };
 
   const renderStepContent = () => {
@@ -138,15 +146,34 @@ const CompetitorAnalysisFlow = () => {
               <p className="text-slate-600 mb-6">We've identified top competitors based on your website and industry.</p>
             </div>
 
+            {addedCompetitor && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    {addedCompetitor}
+                    <button onClick={removeCustomCompetitor} className="ml-1">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                </div>
+                <p className="text-sm text-amber-600">Only one competitor can be selected for analysis at a time.</p>
+              </div>
+            )}
+
             <RadioGroup 
               value={formData.competitor} 
               onValueChange={(value) => setFormData({ ...formData, competitor: value })}
               className="space-y-3"
+              disabled={!!addedCompetitor}
             >
               {suggestedCompetitors.map((competitor) => (
-                <div key={competitor.name} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-slate-50">
-                  <RadioGroupItem value={competitor.name.toLowerCase()} id={competitor.name} />
-                  <Label htmlFor={competitor.name} className="flex-1 cursor-pointer">
+                <div key={competitor.name} className={`flex items-center space-x-3 p-4 border rounded-lg ${addedCompetitor ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50'}`}>
+                  <RadioGroupItem 
+                    value={competitor.name.toLowerCase()} 
+                    id={competitor.name} 
+                    disabled={!!addedCompetitor}
+                  />
+                  <Label htmlFor={competitor.name} className={`flex-1 ${addedCompetitor ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-medium text-slate-900">{competitor.name}</div>
@@ -161,25 +188,27 @@ const CompetitorAnalysisFlow = () => {
               ))}
             </RadioGroup>
 
-            <div className="border-t pt-4">
-              <p className="text-sm font-medium text-slate-700 mb-3">Or Add Competitor Manually</p>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="competitor-domain.com"
-                  value={customCompetitor}
-                  onChange={(e) => setCustomCompetitor(e.target.value)}
-                  className="flex-1"
-                />
-                <Button variant="outline" onClick={addCustomCompetitor}>
-                  Add
-                </Button>
+            {!addedCompetitor && (
+              <div className="border-t pt-4">
+                <p className="text-sm font-medium text-slate-700 mb-3">Or Add Competitor Manually</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="competitor-domain.com"
+                    value={customCompetitor}
+                    onChange={(e) => setCustomCompetitor(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button variant="outline" onClick={addCustomCompetitor}>
+                    Add
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
             <Button 
               onClick={handleNext} 
               className="w-full"
-              disabled={!formData.competitor && !customCompetitor}
+              disabled={!formData.competitor && !addedCompetitor}
             >
               Next
             </Button>

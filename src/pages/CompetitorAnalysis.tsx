@@ -9,7 +9,6 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import Sidebar from "@/components/Sidebar";
 import { 
-  ArrowLeft, 
   Globe, 
   Users, 
   TrendingUp, 
@@ -68,7 +67,7 @@ const CompetitorAnalysis = () => {
       id: 'key-partners', 
       title: 'Key Partners', 
       color: 'bg-blue-50', 
-      description: 'The network of suppliers and partners that make the business model work.',
+      description: 'External companies or entities that help you run your business.',
       content: ['Technology providers', 'Integration partners', 'Consulting firms', 'Cloud infrastructure providers']
     },
     { 
@@ -89,7 +88,7 @@ const CompetitorAnalysis = () => {
       id: 'value-propositions', 
       title: 'Value Propositions', 
       color: 'bg-orange-50', 
-      description: 'The unique value you\'re offering to the customer.',
+      description: 'The unique value your product or service delivers to customers.',
       content: ['Real-time collaboration', 'Unified workspace', 'Cross-platform sync', 'Enterprise security']
     },
     { 
@@ -138,11 +137,6 @@ const CompetitorAnalysis = () => {
         <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 z-10">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="h-6 w-px bg-slate-200" />
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">{companyName} Analysis</h1>
                 <p className="text-sm text-slate-500">Comprehensive competitive intelligence report</p>
@@ -164,7 +158,7 @@ const CompetitorAnalysis = () => {
         <div className="p-8 max-w-6xl mx-auto">
           <div className="space-y-12">
 
-            {/* 1. Company Overview - Keep existing */}
+            {/* Company Overview */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Company Overview</h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -238,7 +232,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 2. Website Overview */}
+            {/* Website Overview */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Website Overview</h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -276,7 +270,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 3. Audience Insights */}
+            {/* Audience Insights */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Audience Insights</h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -359,7 +353,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 4. Market Metrics */}
+            {/* Market Metrics */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Market Metrics</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -415,7 +409,7 @@ const CompetitorAnalysis = () => {
               </Card>
             </section>
 
-            {/* 5. Brand & Messaging - Updated horizontal layout */}
+            {/* Brand & Messaging */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Brand & Messaging</h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -472,7 +466,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 6. Competitor List */}
+            {/* Competitor List */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Competitor List</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -502,7 +496,7 @@ const CompetitorAnalysis = () => {
               </div>
             </section>
 
-            {/* 7. Business Model Canvas - Updated layout with working tooltips */}
+            {/* Business Model Canvas - Updated layout */}
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold text-slate-900">Business Model Canvas</h2>
               <Card className="premium-shadow border-0">
@@ -573,27 +567,6 @@ const CompetitorAnalysis = () => {
                         </ul>
                       </div>
 
-                      <div className={`${canvasBlocks[3].color} p-4 rounded-lg row-span-2`}>
-                        <div className="flex items-start justify-between mb-3">
-                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[3].title}</h3>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button className="flex items-center justify-center">
-                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-48">
-                              <p className="text-xs">{canvasBlocks[3].description}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <ul className="space-y-1.5">
-                          {canvasBlocks[3].content.map((item, index) => (
-                            <li key={index} className="text-xs text-slate-700">• {item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
                       <div className={`${canvasBlocks[6].color} p-4 rounded-lg row-span-2`}>
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[6].title}</h3>
@@ -615,7 +588,50 @@ const CompetitorAnalysis = () => {
                         </ul>
                       </div>
 
+                      <div className={`${canvasBlocks[5].color} p-4 rounded-lg row-span-2`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[5].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[5].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[5].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
                       {/* Row 2 */}
+                      <div className={`${canvasBlocks[3].color} p-4 rounded-lg col-span-3`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[3].title}</h3>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button className="flex items-center justify-center">
+                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-48">
+                              <p className="text-xs">{canvasBlocks[3].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {canvasBlocks[3].content.map((item, index) => (
+                            <li key={index} className="text-xs text-slate-700">• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Row 3 */}
                       <div className={`${canvasBlocks[4].color} p-4 rounded-lg`}>
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[4].title}</h3>
@@ -637,28 +653,7 @@ const CompetitorAnalysis = () => {
                         </ul>
                       </div>
 
-                      <div className={`${canvasBlocks[5].color} p-4 rounded-lg`}>
-                        <div className="flex items-start justify-between mb-3">
-                          <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[5].title}</h3>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button className="flex items-center justify-center">
-                                <Info className="w-4 h-4 text-slate-500 hover:text-slate-700" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-48">
-                              <p className="text-xs">{canvasBlocks[5].description}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <ul className="space-y-1.5">
-                          {canvasBlocks[5].content.map((item, index) => (
-                            <li key={index} className="text-xs text-slate-700">• {item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Row 3 */}
+                      {/* Row 4 */}
                       <div className={`${canvasBlocks[7].color} p-4 rounded-lg col-span-2`}>
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-bold text-sm text-slate-900">{canvasBlocks[7].title}</h3>

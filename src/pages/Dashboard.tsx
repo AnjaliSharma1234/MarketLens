@@ -1,10 +1,13 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import CompetitorAnalysisFlow from "@/components/CompetitorAnalysisFlow";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   const recentAnalyses = [
     {
       id: 1,
@@ -50,7 +53,11 @@ const Dashboard = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-slate-900">Your Recent Reports</h2>
-                <Button variant="ghost" className="text-primary hover:text-primary/80">
+                <Button 
+                  variant="ghost" 
+                  className="text-primary hover:text-primary/80"
+                  onClick={() => navigate('/saved-reports')}
+                >
                   View All Reports
                 </Button>
               </div>
