@@ -1,23 +1,10 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Sidebar from "@/components/Sidebar";
-import { Search, TrendingUp, Clock, Star } from "lucide-react";
+import CompetitorAnalysisFlow from "@/components/CompetitorAnalysisFlow";
 
 const Dashboard = () => {
-  const [companyInput, setCompanyInput] = useState("");
-  const navigate = useNavigate();
-
-  const handleAnalyze = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (companyInput.trim()) {
-      navigate(`/analysis/${encodeURIComponent(companyInput.trim())}`);
-    }
-  };
-
   const recentAnalyses = [
     {
       id: 1,
@@ -52,55 +39,17 @@ const Dashboard = () => {
             
             {/* Header */}
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-slate-900">Start Your Competitive Analysis</h1>
-              <p className="text-slate-600">Enter a competitor's website or company name to generate a comprehensive market intelligence report</p>
+              <h1 className="text-3xl font-bold text-slate-900">Analyse My Competitors</h1>
+              <p className="text-slate-600">Get personalized competitive intelligence in minutes</p>
             </div>
 
-            {/* Search Card */}
-            <Card className="premium-shadow border-0">
-              <CardContent className="p-8">
-                <form onSubmit={handleAnalyze} className="space-y-6">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                    <Input
-                      type="text"
-                      placeholder="Enter company name or website (e.g., notion.so, Figma, Linear)"
-                      value={companyInput}
-                      onChange={(e) => setCompanyInput(e.target.value)}
-                      className="pl-12 h-14 text-lg border-slate-200 focus:border-primary focus:ring-primary/20"
-                    />
-                  </div>
-                  
-                  <Button 
-                    type="submit"
-                    className="w-full h-14 bg-primary hover:bg-primary/90 text-white text-lg font-semibold"
-                    disabled={!companyInput.trim()}
-                  >
-                    Generate Comprehensive Report
-                  </Button>
-                </form>
-                
-                <div className="mt-6 flex items-center gap-4 text-sm text-slate-500">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" />
-                    <span>Real-time data</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    <span>~2 min analysis</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4" />
-                    <span>10+ insight categories</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Competitor Analysis Flow */}
+            <CompetitorAnalysisFlow />
 
             {/* Recent Analyses */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-slate-900">Your Recent Analyses</h2>
+                <h2 className="text-xl font-semibold text-slate-900">Your Recent Reports</h2>
                 <Button variant="ghost" className="text-primary hover:text-primary/80">
                   View All Reports
                 </Button>
@@ -136,28 +85,6 @@ const Dashboard = () => {
                   </Card>
                 ))}
               </div>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="border-0 premium-shadow">
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-bold text-slate-900">47</div>
-                  <div className="text-sm text-slate-600">Total Analyses</div>
-                </CardContent>
-              </Card>
-              <Card className="border-0 premium-shadow">
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-bold text-slate-900">12</div>
-                  <div className="text-sm text-slate-600">This Month</div>
-                </CardContent>
-              </Card>
-              <Card className="border-0 premium-shadow">
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-bold text-slate-900">8.4</div>
-                  <div className="text-sm text-slate-600">Avg. Score</div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

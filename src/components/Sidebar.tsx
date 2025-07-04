@@ -1,7 +1,7 @@
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, BookOpen, User, Settings } from "lucide-react";
+import { LayoutDashboard, BookOpen, User, Settings, MessageCircle } from "lucide-react";
 
 const navigation = [{
   name: 'Dashboard',
@@ -11,6 +11,10 @@ const navigation = [{
   name: 'Saved Reports',
   href: '/saved-reports',
   icon: BookOpen
+}, {
+  name: 'Ask Me Anything',
+  href: '/ask',
+  icon: MessageCircle
 }];
 
 const Sidebar = () => {

@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import CompetitorAnalysis from "./pages/CompetitorAnalysis";
 import SavedReports from "./pages/SavedReports";
 import Settings from "./pages/Settings";
+import AskMeAnything from "./pages/AskMeAnything";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,14 @@ const App = () => {
               element={
                 isAuthenticated ? 
                 <SavedReports /> : 
+                <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/ask" 
+              element={
+                isAuthenticated ? 
+                <AskMeAnything /> : 
                 <Navigate to="/login" replace />
               } 
             />
