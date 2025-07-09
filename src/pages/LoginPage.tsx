@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { auth, createUserProfile, initializeUserPlanData } from "@/lib/firebase";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -13,11 +14,75 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Helper to map Firebase errors to user-friendly messages
+  const getFriendlyError = (code: string, message?: string) => {
+    switch (code) {
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+      case "auth/invalid-login-credentials":
+      case "auth/invalid-email":
+      case "auth/invalid-password":
+      case "auth/configuration-not-found":
+        return "Invalid Username or Password.";
+      case "auth/email-already-in-use":
+        return "This email is already registered.";
+      case "auth/popup-closed-by-user":
+        return "Google sign-in was cancelled.";
+      case "auth/weak-password":
+      case "WEAK_PASSWORD":
+        return "Weak Password – Password should be at least 6 characters.";
+      default:
+        if (message && message.includes("WEAK_PASSWORD")) {
+          return "Weak Password – Password should be at least 6 characters.";
+        }
+        return "Something went wrong. Please try again.";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate authentication
-    onLogin();
+    setError("");
+    try {
+      if (isSignUp) {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await createUserProfile(userCredential.user);
+        await initializeUserPlanData(userCredential.user);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      onLogin();
+    } catch (err: any) {
+      setError(getFriendlyError(err.code, err.message));
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      await createUserProfile(userCredential.user);
+      await initializeUserPlanData(userCredential.user);
+      onLogin();
+    } catch (err: any) {
+      setError(getFriendlyError(err.code, err.message));
+    }
+  };
+
+  // Clear error on input change or flow switch
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (error) setError("");
+  };
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (error) setError("");
+  };
+  const handleFlowSwitch = () => {
+    setIsSignUp(!isSignUp);
+    if (error) setError("");
   };
 
   return (
@@ -83,7 +148,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     className="h-12 border-slate-200 focus:border-primary focus:ring-primary/20"
                     required
                   />
@@ -94,11 +159,15 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                     type="password"
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     className="h-12 border-slate-200 focus:border-primary focus:ring-primary/20"
                     required
                   />
                 </div>
+                
+                {error && (
+                  <div className="text-red-600 text-sm text-center">{error}</div>
+                )}
                 
                 <Button 
                   type="submit" 
@@ -118,6 +187,8 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               <Button 
                 variant="outline" 
                 className="w-full h-12 border-slate-200 hover:bg-slate-50"
+                onClick={handleGoogleSignIn}
+                type="button"
               >
                 <img 
                   src="https://developers.google.com/identity/images/g-logo.png" 
@@ -130,7 +201,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={() => setIsSignUp(!isSignUp)}
+                  onClick={handleFlowSwitch}
                   className="text-sm text-primary hover:text-primary/80 font-medium"
                 >
                   {isSignUp 

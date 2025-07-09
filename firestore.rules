@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUserAuthenticated(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User collection rules
+    match /users/{userId} {
+      allow read: if isUserAuthenticated(userId);
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isUserAuthenticated(userId);
+    }
+
+    // Plans collection rules
+    match /plans/{planId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin can modify plans
+    }
+
+    // Prompts collection rules
+    match /prompts/{promptId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin can modify prompts
+    }
+
+    // Saved Analysis collection rules
+    match /savedAnalysis/{docId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    // Chats collection rules
+    match /chats/{chatId} {
+      // Allow list for authenticated users (query is filtered by userId)
+      allow list: if isAuthenticated();
+      // Allow get/update/delete only if the user owns the chat
+      allow get, update, delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      // Allow create if the user is authenticated and is the owner
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      
+      // Messages subcollection rules
+      match /messages/{messageId} {
+        // Allow read/write only if the user owns the parent chat
+        allow read, write: if isAuthenticated() && 
+          get(/databases/$(database)/documents/chats/$(chatId)).data.userId == request.auth.uid;
+      }
+    }
+
+    // Analyses collection rules
+    match /analyses/{analysisId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      match /sections/{sectionId} {
+        allow read, write: if isAuthenticated() && request.auth.uid == resource.data.userId;
+        allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      }
+    }
+  }
+} 
