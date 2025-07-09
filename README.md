@@ -1,73 +1,147 @@
-# Welcome to your Lovable project
+# MarketLens - AI-Powered Competitive Intelligence Platform
 
-## Project info
+MarketLens is a sophisticated web application that provides AI-powered competitive analysis and market intelligence. It helps businesses understand their competitors, market positioning, and strategic opportunities through automated analysis and insights.
 
-**URL**: https://lovable.dev/projects/40f49769-b50b-4d6f-89d0-a1dfa54a1fcd
+## 🌟 Key Features
 
-## How can I edit this code?
+### 1. Competitor Analysis
+- Automated competitor discovery and analysis
+- Detailed company overviews and profiles
+- Real-time market positioning insights
+- Comprehensive competitor comparison
 
-There are several ways of editing your application.
+### 2. Marketing Intelligence
+- Brand messaging analysis
+- Website traffic insights
+- Marketing channel effectiveness
+- SEO strategy analysis
+- Target audience profiling
 
-**Use Lovable**
+### 3. Product & Pricing Analysis
+- Feature comparison
+- Pricing strategy insights
+- Market positioning analysis
+- Technology stack evaluation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/40f49769-b50b-4d6f-89d0-a1dfa54a1fcd) and start prompting.
+### 4. AI-Powered Insights
+- Ask Me Anything (AMA) feature for custom queries
+- Real-time data analysis
+- Automated report generation
+- Contextual recommendations
 
-Changes made via Lovable will be committed automatically to this repo.
+### 5. Report Management
+- Save and organize competitor reports
+- Export capabilities
+- Historical analysis tracking
+- Custom report organization
 
-**Use your preferred IDE**
+## 🛠️ Technology Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Frontend
+- React 18 with TypeScript
+- Vite for build tooling
+- TailwindCSS for styling
+- Shadcn UI components
+- Radix UI primitives
+- React Router for navigation
+- React Query for data fetching
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Backend
+- Firebase for authentication and database
+- Express.js for API handling
+- Node.js runtime
+- Cheerio for web scraping
 
-Follow these steps:
+### AI/ML
+- GPT integration for analysis
+- Custom prompt engineering
+- Intelligent data processing
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 📦 Prerequisites
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Node.js (v16 or higher)
+- npm or yarn
+- Firebase account
+- Environment variables setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🚀 Getting Started
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1. Clone the repository:
+```bash
+git clone https://github.com/theanjalisharmaa/marketlens-insights.git
+cd marketlens-insights
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory with your Firebase configuration:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+4. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+5. Start the backend server:
+```bash
+npm run server
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🏗️ Project Structure
 
-**Use GitHub Codespaces**
+```
+marketlens-insights/
+├── api/                  # Backend API endpoints
+├── src/
+│   ├── components/       # React components
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions and configs
+│   ├── pages/           # Page components
+│   └── styles/          # Global styles
+├── public/              # Static assets
+└── server.cjs          # Express server setup
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔒 Authentication
 
-## What technologies are used for this project?
+The application uses Firebase Authentication with the following methods:
+- Email/Password authentication
+- Google Sign-In
+- Custom user profile management
 
-This project is built with:
+## 💾 Database Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Firebase Firestore collections:
+- `users`: User profiles and settings
+- `savedAnalysis`: Saved competitor analyses
+- `chats`: AI conversation history
+- `prompts`: System prompts for AI
 
-## How can I deploy this project?
+## 🚀 Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/40f49769-b50b-4d6f-89d0-a1dfa54a1fcd) and click on Share -> Publish.
+The application can be deployed using:
+- Vercel (Frontend)
+- Firebase Functions (Backend)
+- Custom server deployment options
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 License
 
-Yes, you can!
+This project is private and proprietary. All rights reserved.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🤝 Contributing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This is a private repository. Contact the repository owner for contribution guidelines.
+
+## 📧 Support
+
+For support or inquiries, please contact the repository owner.
